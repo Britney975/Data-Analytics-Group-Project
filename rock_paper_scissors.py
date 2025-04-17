@@ -1,5 +1,5 @@
 """
-Rock-Paper-Scissors Game with GUI
+Rock-Paper-Scissors Game
 Author: Saskia Brown
 Sources: https://docs.python.org/3/library/tkinter.html, https://realpython.com/python-gui-tkinter/
 """
