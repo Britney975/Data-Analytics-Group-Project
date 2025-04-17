@@ -1,0 +1,106 @@
+"""
+Whack-a-Mole Game
+Author: Rihanna Barrett
+"""
+
+import tkinter as tk
+import random
+
+class WhackAMole:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Whack-a-Mole 🐹")
+        self.root.geometry("400x500")
+        self.root.configure(bg="#e0f7fa")
+
+        self.score = 0
+        self.time_left = 30
+        self.buttons = []
+        self.current_mole = None
+
+        self.score_label = tk.Label(root, text="Score: 0", font=("Arial", 16), bg="#e0f7fa")
+        self.score_label.pack(pady=10)
+
+        self.time_label = tk.Label(root, text="Time: 30s", font=("Arial", 16), bg="#e0f7fa")
+        self.time_label.pack()
+
+        self.grid_frame = tk.Frame(root, bg="#e0f7fa")
+        self.grid_frame.pack(pady=20)
+
+        for i in range(3):
+            row = []
+            for j in range(3):
+                btn = tk.Button(self.grid_frame, text="", width=10, height=5, bg="lightgray",
+                                command=lambda x=i, y=j: self.hit_mole(x, y))
+                btn.grid(row=i, column=j, padx=5, pady=5)
+                row.append(btn)
+            self.buttons.append(row)
+
+        self.start_button = tk.Button(root, text="Start Game", font=("Arial", 14),
+                                      command=self.start_game, bg="#26c6da", fg="white")
+        self.start_button.pack(pady=10)
+
+        self.result_label = tk.Label(root, text="", font=("Arial", 14), bg="#e0f7fa")
+        self.result_label.pack(pady=10)
+
+    def start_game(self):
+        self.score = 0
+        self.time_left = 30
+        self.update_score()
+        self.update_time()
+        self.result_label.config(text="")
+        self.whack_loop()
+
+    def whack_loop(self):
+        if self.time_left > 0:
+            self.time_left -= 1
+            self.update_time()
+            self.show_random_mole()
+            self.root.after(1000, self.whack_loop)
+        else:
+            self.end_game()
+
+    def update_score(self):
+        self.score_label.config(text=f"Score: {self.score}")
+
+    def update_time(self):
+        self.time_label.config(text=f"Time: {self.time_left}s")
+
+    def show_random_mole(self):
+        if self.current_mole:
+            x, y = self.current_mole
+            self.buttons[x][y].config(text="", bg="lightgray")
+
+        x = random.randint(0, 2)
+        y = random.randint(0, 2)
+        self.current_mole = (x, y)
+        self.buttons[x][y].config(text="🐹", bg="brown")
+
+    def hit_mole(self, x, y):
+        if self.current_mole == (x, y):
+            self.score += 1
+            self.update_score()
+            self.buttons[x][y].config(text="", bg="lightgray")
+            self.current_mole = None
+
+    def end_game(self):
+        self.result_label.config(text=f"Time’s up! Final Score: {self.score}")
+        if self.current_mole:
+            x, y = self.current_mole
+            self.buttons[x][y].config(text="", bg="lightgray")
+        self.save_stats()
+
+    def save_stats(self):
+        with open("whackamole_stats.txt", "a") as f:
+            f.write(f"Score: {self.score}\n")
+
+
+def play_whack_a_mole():
+    root = tk.Tk()
+    game = WhackAMole(root)
+    root.mainloop()
+
+if __name__ == "__main__":
+    play_whack_a_mole()
+
+
