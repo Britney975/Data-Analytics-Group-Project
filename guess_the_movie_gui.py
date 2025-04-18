@@ -1,4 +1,6 @@
 # guess_the_movie_gui.py
+# sources- https://github.com/aday10900k/xox
+#Britania Fisher
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
